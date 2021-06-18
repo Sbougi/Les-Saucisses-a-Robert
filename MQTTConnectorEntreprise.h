@@ -1,72 +1,38 @@
-#include <MQTT.h>
+// Connection en utilisant le wifi local
 
-MQTTClient mqqtClient;  // Créer un client MQTT pour gérer les messages entre l'objet et le broker
+// Librairies
+#include <WiFiNINA.h>
+#include "wifiStatus.h"
 
-// Commencement de la payload
-String payload ="{";
+// Informations de la connexion au wifi chez le client
+char ssid[] = "Objets_IDO";  // Wifi SSID (name)
+char user[] = "";
+char pass[] = "42Bidules!";  // Wifi mot de passe chez le client
 
-const char mqttServer[] = "thingsboard.cloud"; // L'adresse IP du IDO ThingsBoard cloud (Broker) dans la classe
-//const char mqttServer[] = "198.164.130.75"; // L'adresse IP du IDO ThingsBoard serveur (Broker) dans la classe
-const int mqttServerPort = 1883; // broker mqtt port
-
-const char key[] = "5CvmrGx8nxKvvltvpVGm"; // broker access toke.n
-const char secret[] = ""; // broker secret
-const char device[] = "79f481c0-cd35-11eb-8c1b-1520a2e6ced5"; // broker device identifier
+int status = WL_IDLE_STATUS;     // the Wifi radio's status
 
 
+WiFiClient wifiClient; 
 
+// Fonction pour connecter au reseau wifi
+void wifiConnect()
+{
+    
+  // Essayer de se connecter au wifi
+  while (status != WL_CONNECTED) {
+    Serial.print("Attempting to connect to WPA SSID: ");
+    Serial.println(ssid);
+   
+    status = WiFi.begin(ssid, pass);
+    Serial.println(status);
 
-MQTTClient mqttClient;  // Create a MQTT client to handle messagin between object and broker
-
-void MQTTConnect() {
-  
-  mqqtClient.begin(mqttServer, mqttServerPort, wifiClient);
-  Serial.print("Connecting to broker...");
-  
-  while (!mqqtClient.connect(device, key, secret)) {
-    Serial.print(".");
-    delay(1000);
+    // Attendre 10 secondes pour la connexion
+    delay(10000);
   }
 
-  Serial.println("\nConnected to MQTT!\n");
+  // Afficher pour confirmer qu'ons est connecté
+  Serial.print("You're connected to the network");
+  printCurrentNet();
+  printWifiData();
 
-}
-
-void appendPayload(String Name, String Val)
-{
-
-  if( payload != "{")
-  {
-    payload += ",";  
-  }
-  
-  payload += "\"";
-  payload += Name; 
-  payload += "\": ";
-  payload += Val;
-  
-
-  //Serial.println(payload);
-  
-}
-
-void sendPayload()
-{
-  char attributes[200];
-  payload += "}";
-  payload.toCharArray(attributes, 200);
-  mqqtClient.publish("v1/devices/me/telemetry", attributes);
-  Serial.println(payload);
-  payload="{";
-  
-}
-
-void payloadDetails()
-{
-
-  Serial.print("payload -> ");
-  Serial.println(payload);
-  Serial.print("payload length -> ");
-  Serial.println(payload.length());
-  
 }

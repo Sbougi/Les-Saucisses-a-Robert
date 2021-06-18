@@ -1,3 +1,4 @@
+// Fonction pour afficher l'adresse MAC
 void printMacAddress(byte mac[]) {
   for (int i = 5; i >= 0; i--) {
     if (mac[i] < 16) {
@@ -11,13 +12,14 @@ void printMacAddress(byte mac[]) {
   Serial.println();
 }
 
+// Fonction pour afficher l'information du wifi
 void printWifiData() {
-  // print your board's IP address:
+  // Afficher l'adresse ip
   IPAddress ip = WiFi.localIP();
   Serial.print("IP Address: ");
   Serial.println(ip);
 
-  // print your MAC address:
+  // Afficher l'adresse mac
   byte mac[6];
   WiFi.macAddress(mac);
   Serial.print("MAC address: ");
@@ -25,22 +27,22 @@ void printWifiData() {
 }
 
 void printCurrentNet() {
-  // print the SSID of the network you're attached to:
+  // Afficher l'SSID du reseau connecté
   Serial.print("SSID: ");
   Serial.println(WiFi.SSID());
 
-  // print the MAC address of the router you're attached to:
+  // Afficher l'adresse MAC qu'ons connecté qvec
   byte bssid[6];
   WiFi.BSSID(bssid);
   Serial.print("BSSID: ");
   printMacAddress(bssid);
 
-  // print the received signal strength:
+  // Afficher le signal recu
   long rssi = WiFi.RSSI();
   Serial.print("signal strength (RSSI):");
   Serial.println(rssi);
 
-  // print the encryption type:
+  // Afficher le type d'encryption
   byte encryption = WiFi.encryptionType();
   Serial.print("Encryption Type:");
   Serial.println(encryption, HEX);
